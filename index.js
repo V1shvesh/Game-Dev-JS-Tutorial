@@ -35,61 +35,73 @@ class Circle {
   draw() {
     const { x, y, radius, fillColor } = this;
 
-    ctx.save(); // Push the current Canvas context state in a stack.
+    ctx.save();
     ctx.fillStyle = fillColor;
     ctx.beginPath();
     ctx.arc(x, y, radius, 0, Math.PI * 2);
     ctx.closePath();
     ctx.fill();
-    ctx.restore(); // Pop out the previous Canvas context state from the stack.
+    ctx.restore();
   }
 }
 
-class Ball extends Circle {
-  constructor(x, y, radius, fillColor, speed) {
-    super(x, y, radius, fillColor);
-    this.speed = speed; // Need for Speed
+
+function mutateAsteroid() {
+  const radius = (Math.random() * 30) + 20;
+  const x = CANVAS_WIDTH;
+  const y = Math.random() * CANVAS_HEIGHT;
+  return { x, radius, y};
+}
+
+
+class Asteroid extends Circle {
+  constructor() {
+    const { x, radius, y } = mutateAsteroid();
+    super(x + radius, y, radius, '#9FA4A9');
+    this.speed = -(Math.random() * 5 + 2);
   }
 
   update() {
     this.x = this.x + this.speed;
+
+    // Mutate and Reuse
+    if(this.x <= -this.radius) {
+      const { x, radius, y} = mutateAsteroid();
+      this.x = x + radius ;
+      this.y = y;
+      this.radius = radius;
+      this.speed = -(Math.random() * 5 + 2);
+    }
   }
 }
 
-// !!!Global Variables!!!
-let ballObject = null;
+// Game Params
+const NO_OF_ASTEROIDS = 5
+
+let asteroidGang = Array(NO_OF_ASTEROIDS).fill(null);
 
 
-// Init GameObjects
 function init() {
-  // Init your game objects here
-  ballObject = new Ball(0, 100, 50, '#00a0ef', 1);
+  asteroidGang = asteroidGang.map(() => new Asteroid());
 }
 
 function updateState() {
-  ballObject.update();
+  asteroidGang.forEach(asteroid => asteroid.update());
 }
 
 function drawFrame() {
-  ballObject.draw();
+  asteroidGang.forEach(asteroid => asteroid.draw());
 }
 
-// Render Loop
 function loop() {
-  // 1. Update the state
   updateState();
 
-  // 2. Clear the canvas
   ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
 
-  // 3. Render the new frame
   drawFrame();
 
-  // Recurse Responsibly
   requestAnimationFrame(loop);
 }
 
-
-// Get...Set...Go!
 init();
 loop();
