@@ -16,30 +16,69 @@ updateCanvasDimensions();
 
 const ctx = canvas.getContext('2d');
 
-// Style Attributes
-ctx.fillStyle = 'black';
-ctx.strokeStyle = 'black';
+// Circle class
+class Circle {
+  constructor(x, y, radius, fillColor) {
+    this.x = x;
+    this.y = y;
+    this.radius = radius;
+    this.fillColor = fillColor;
+  }
 
-// Rectangles
-ctx.fillRect(25, 25, 100, 100);
-ctx.clearRect(45, 45, 60, 60);
-ctx.strokeRect(50, 50, 50, 50);
+  update(x,y,r,c) {
+    this.x = x;
+    this.y = y;
+    this.radius = r;
+    this.fillColor = c;
+  }
 
-// Triangle
-ctx.beginPath();
-ctx.moveTo(200, 100);
-ctx.lineTo(260, 40);
-ctx.lineTo(320, 100);
-ctx.closePath()
-ctx.fill();
-// Or to draw just the outline
-// ctx.stroke()
+  draw() {
+    const { x, y, radius, fillColor} = this;
 
-// Circle
-ctx.beginPath()
-// ctx.arc(75, 200, 50, 0, Math.PI*2, false);
-// Or a half-circle
-// ctx.arc(75, 200, 50, 0, Math.PI, true);
-// Let's turn that frown upside down
-ctx.arc(75, 200, 50, 0, Math.PI, false);
-ctx.stroke();
+    ctx.save(); // Push the current Canvas context state in a stack.
+    ctx.fillStyle = fillColor;
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, Math.PI * 2);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore(); // Pop out the previous Canvas context state from the stack.
+  }
+}
+
+// !!!Global Variables!!!
+let circleObject = null;
+
+
+// Init GameObjects
+function init() {
+  // Init your game objects here
+  circleObject = new Circle(100, 100, 50, '#00a0ef');
+}
+
+function updateState() {
+  
+}
+
+function drawFrame() {
+  circleObject.draw();
+}
+
+// Render Loop
+function loop() {
+  // 1. Update the state
+  updateState();
+
+  // 2. Clear the canvas
+  ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
+
+  // 3. Render the new frame
+  drawFrame();
+
+  // Recurse Responsibly
+  requestAnimationFrame(loop);
+}
+
+
+// Get...Set...Go!
+init();
+loop();
