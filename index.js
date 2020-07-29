@@ -33,7 +33,7 @@ class Circle {
   }
 
   draw() {
-    const { x, y, radius, fillColor} = this;
+    const { x, y, radius, fillColor } = this;
 
     ctx.save(); // Push the current Canvas context state in a stack.
     ctx.fillStyle = fillColor;
@@ -45,22 +45,33 @@ class Circle {
   }
 }
 
+class Ball extends Circle {
+  constructor(x, y, radius, fillColor, speed) {
+    super(x, y, radius, fillColor);
+    this.speed = speed; // Need for Speed
+  }
+
+  update() {
+    this.x = this.x + this.speed;
+  }
+}
+
 // !!!Global Variables!!!
-let circleObject = null;
+let ballObject = null;
 
 
 // Init GameObjects
 function init() {
   // Init your game objects here
-  circleObject = new Circle(100, 100, 50, '#00a0ef');
+  ballObject = new Ball(0, 100, 50, '#00a0ef', 1);
 }
 
 function updateState() {
-  
+  ballObject.update();
 }
 
 function drawFrame() {
-  circleObject.draw();
+  ballObject.draw();
 }
 
 // Render Loop
