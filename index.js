@@ -1,5 +1,10 @@
 import './styles.css';
 
+// Distance between 2 pts.
+function distance(x1, y1, x2, y2) {
+  return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+}
+
 const canvas = document.querySelector('canvas');
 
 let CANVAS_WIDTH = 400;
@@ -109,11 +114,25 @@ class Spaceship extends Circle {
   }
 }
 
+// Collision Detection
+function detectCollisions(spaceship, asteroidGang) {
+  for(let asteroid of asteroidGang) {
+    const distanceBetweenPlayerandBoulder = distance(spaceship.x, spaceship.y, asteroid.x, asteroid.y);
+    if (distanceBetweenPlayerandBoulder <= spaceship.radius + asteroid.radius) {
+      asteroid.fillColor = '#3d4042';
+      return true;
+    }
+  }
+  return false;
+}
+
 // Game Params
 const NO_OF_ASTEROIDS = 5
 
 let asteroidGang = Array(NO_OF_ASTEROIDS).fill(null);
 let spaceship = null;
+// Collision flag
+let isColliding = false;
 
 function init() {
   asteroidGang = asteroidGang.map(() => new Asteroid());
@@ -122,7 +141,7 @@ function init() {
 
 function updateState() {
   asteroidGang.forEach(asteroid => asteroid.update());
-  spaceship.update();
+  isColliding || spaceship.update();
 }
 
 function drawFrame() {
@@ -132,6 +151,15 @@ function drawFrame() {
 
 function loop() {
   updateState();
+
+  // Check for collisions after state update, but before draw.
+  if(detectCollisions(spaceship, asteroidGang)) {
+    isColliding = true;
+    spaceship.fillColor = '#A53F2B';
+    asteroidGang.forEach(asteroid => {
+      asteroid.speed = 0;
+    });
+  }
 
   ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
 
