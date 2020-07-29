@@ -1,6 +1,31 @@
 import './styles.css';
 
-// Distance between 2 pts.
+// 2. Query the DOM Tree for its DOM node.
+const audioElement = document.querySelector('audio');
+
+// 3. Create an AudioContext for programmatically controlling its playback.
+const audioContext = new AudioContext();
+
+// 4. Access the track from the <audio> element. 
+const track = audioContext.createMediaElementSource(audioElement);
+track.mediaElement.loop = true;
+
+// Set up the GainNode and adjust volume
+const volumeControl = new GainNode(audioContext);
+volumeControl.gain.value = 0.7;
+
+// Connect the Audio Nodes
+track.connect(volumeControl);
+volumeControl.connect(audioContext.destination);
+
+// To circumvent Chrome autoplay policy
+if(audioContext.state === 'suspended') {
+  audioContext.resume();
+}
+
+// Play it up!
+audioElement.play();
+
 function distance(x1, y1, x2, y2) {
   return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
 }
@@ -114,7 +139,6 @@ class Spaceship extends Circle {
   }
 }
 
-// Collision Detection
 function detectCollisions(spaceship, asteroidGang) {
   for(let asteroid of asteroidGang) {
     const distanceBetweenPlayerandBoulder = distance(spaceship.x, spaceship.y, asteroid.x, asteroid.y);
@@ -131,7 +155,6 @@ const NO_OF_ASTEROIDS = 5
 
 let asteroidGang = Array(NO_OF_ASTEROIDS).fill(null);
 let spaceship = null;
-// Collision flag
 let isColliding = false;
 
 function init() {
@@ -152,7 +175,6 @@ function drawFrame() {
 function loop() {
   updateState();
 
-  // Check for collisions after state update, but before draw.
   if(detectCollisions(spaceship, asteroidGang)) {
     isColliding = true;
     spaceship.fillColor = '#A53F2B';
