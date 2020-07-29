@@ -1,0 +1,24 @@
+{
+  "name": "game-dev-js-tutorial",
+  "private": true,
+  "version": "1.0.0",
+  "description": "JS Game Dev Tutorial using Browser-Level APIs",
+  "main": "index.js",
+  "scripts": {
+    "start": "parcel index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/V1shvesh/Game-Dev-JS-Tutorial.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/V1shvesh/Game-Dev-JS-Tutorial/issues"
+  },
+  "homepage": "https://github.com/V1shvesh/Game-Dev-JS-Tutorial#readme",
+  "dependencies": {
+    "parcel": "^1.12.4"
+  }
+}
